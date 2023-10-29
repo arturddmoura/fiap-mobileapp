@@ -16,8 +16,8 @@ export default function Cart() {
     <View>
       <View style={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
         <ScrollView style={{ padding: 16 }}>
-          {cartItems.map((item) => (
-            <List.Section>
+          {cartItems.map((item, index) => (
+            <List.Section key={index}>
               <View>
                 <List.Item
                   title={item.name}
