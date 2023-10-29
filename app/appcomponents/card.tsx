@@ -4,12 +4,50 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const width = Dimensions.get('window').width / 2 - 30
 
-import COLORS from './colors'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import Toast from 'react-native-toast-message'
 import { numberFormat } from '../helpers'
+import { CartItem, addToCart } from '../services/cart'
+import COLORS from './colors'
 
 export default function Card({ product }: { product: any }) {
+  const queryClient = useQueryClient()
+
+  const { mutate } = useMutation({
+    mutationFn: (formData: CartItem) => {
+      formData.product_id = formData.id
+      formData.quantity = 1
+      formData.id = Math.floor(Math.random() * 100000000000) + 1
+      return addToCart(formData)
+    },
+    onSuccess: async (data: { status: number }) => {
+      if (data.status == 201) {
+        Toast.show({
+          type: 'success',
+          text1: 'Sucesso!',
+          text2: 'Produto adicionado ao carrinho',
+        })
+        queryClient.invalidateQueries({ queryKey: ['cart'] })
+        queryClient.invalidateQueries({ queryKey: ['cartNumber'] })
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Erro!',
+          text2: 'Erro ao adicionar item ao carrinho',
+        })
+      }
+    },
+    onError: async () => {
+      Toast.show({
+        type: 'error',
+        text1: 'Erro!',
+        text2: 'Erro ao adicionar item ao carrinho',
+      })
+    },
+  })
+
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={() => console.log('foi')}>
+    <TouchableOpacity activeOpacity={0.8}>
       <View style={style.card}>
         <View style={{ alignItems: 'flex-end' }}>
           <View
@@ -36,7 +74,7 @@ export default function Card({ product }: { product: any }) {
             style={{
               flex: 1,
               resizeMode: 'contain',
-              width: 164,
+              width: 100,
             }}
           />
         </View>
@@ -55,6 +93,7 @@ export default function Card({ product }: { product: any }) {
             {numberFormat(product.price)}
           </Text>
           <Text
+            onPress={() => mutate(product)}
             style={{ fontSize: 22, color: COLORS.orange, fontWeight: 'bold' }}
           >
             +
