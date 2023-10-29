@@ -1,16 +1,28 @@
-import { StyleSheet } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native'
 
-import EditScreenInfo from '../../components/EditScreenInfo';
-import { Text, View } from '../../components/Themed';
+import EditScreenInfo from '../../components/EditScreenInfo'
+import { Text, View } from '../../components/Themed'
+import Card from '../appcomponents/card'
+import { products } from '../products'
 
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+      <FlatList
+        columnWrapperStyle={{ justifyContent: 'space-between' }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          marginTop: 30,
+          paddingBottom: 50,
+        }}
+        numColumns={2}
+        data={products}
+        renderItem={({ item }) => {
+          return <Card product={item} />
+        }}
+      />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -28,4 +40,4 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%',
   },
-});
+})
