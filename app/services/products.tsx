@@ -1,13 +1,13 @@
 export interface ProductItem {
-  id: number
+  productId: number
   price: number
   name: string
   picture: string
   description: string
-  available_quantity: number
+  availableQuantity: number
 }
 
 export const getProducts = async () => {
-  const res = await fetch(`https://mock-api-c1ch.onrender.com/products`)
+  const res = await fetch(`https://fiap-api.onrender.com/api/Product/`)
   return res.json()
 }

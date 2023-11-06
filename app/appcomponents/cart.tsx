@@ -16,10 +16,12 @@ import COLORS from './colors'
 export default function Cart() {
   const queryClient = useQueryClient()
 
-  const { data, isFetching } = useQuery({
+  const { data: dbdata, isFetching } = useQuery({
     queryKey: ['cart'],
     queryFn: getCart,
   })
+
+  const data = dbdata?.result ?? []
 
   const [loading, setLoading] = React.useState(false)
   const [loadingDelete, setLoadingDelete] = React.useState(false)
@@ -30,7 +32,7 @@ export default function Cart() {
       return deleteFromCart(id)
     },
     onSuccess: async (data: { status: number }) => {
-      if (data.status == 200) {
+      if (data.status == 204) {
         Toast.show({
           type: 'success',
           text1: 'Sucesso!',
@@ -64,7 +66,7 @@ export default function Cart() {
       return deleteAllFromCart(itemIds)
     },
     onSuccess: async (data: { status: number }) => {
-      if (data.status == 200) {
+      if (data.status == 204) {
         Toast.show({
           type: 'success',
           text1: 'Sucesso!',
@@ -130,7 +132,7 @@ export default function Cart() {
     }
 
     for (const item of data) {
-      totalPrice += item.price * item.quantity
+      totalPrice += item.product.price * item.quantity
     }
   }
 
@@ -148,13 +150,13 @@ export default function Cart() {
               <List.Section key={index}>
                 <View>
                   <List.Item
-                    title={item.name}
+                    title={item.product.name}
                     right={() => (
                       <IconButton
                         disabled={loadingDelete}
                         icon="delete"
                         size={20}
-                        onPress={() => mutate(item.id)}
+                        onPress={() => mutate(item.id ?? 0)}
                       />
                     )}
                     left={() => (
@@ -166,7 +168,7 @@ export default function Cart() {
                       >
                         <Image
                           source={{
-                            uri: item.picture,
+                            uri: item.product.picture,
                           }}
                           style={{
                             flex: 1,
@@ -177,7 +179,7 @@ export default function Cart() {
                       </View>
                     )}
                     description={`${numberFormat(
-                      item.price * item.quantity
+                      item.product.price * item.quantity
                     )} (${item.quantity} unidades)`}
                   />
                 </View>

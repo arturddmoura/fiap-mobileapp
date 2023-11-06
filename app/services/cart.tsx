@@ -1,26 +1,27 @@
+import { ProductItem } from './products'
+
 export interface CartItem {
-  id: number
-  product_id: number
-  price: number
+  id?: number
+  productId: number
   quantity: number
-  available_quantity: number
-  name: string
-  description: string
-  picture: string
+  product: ProductItem
 }
 
 export const getCart = async () => {
-  const res = await fetch(`https://mock-api-c1ch.onrender.com/cart`)
+  const res = await fetch(`https://fiap-api.onrender.com/api/Cart/`)
   return res.json()
 }
 
-export const addToCart = (formData: CartItem) => {
+export const addToCart = (formData: {
+  productId: number
+  quantity: number
+}) => {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(formData),
   }
-  return fetch(`https://mock-api-c1ch.onrender.com/cart/`, requestOptions)
+  return fetch(`https://fiap-api.onrender.com/api/Cart/`, requestOptions)
 }
 
 export const deleteFromCart = (itemId: number) => {
@@ -29,7 +30,7 @@ export const deleteFromCart = (itemId: number) => {
     headers: { 'Content-Type': 'application/json' },
   }
   return fetch(
-    `https://mock-api-c1ch.onrender.com/cart/${itemId}`,
+    `https://fiap-api.onrender.com/api/Cart/${itemId}`,
     requestOptions
   )
 }
@@ -46,7 +47,7 @@ export const deleteAllFromCart = async (
 
   for (const id of itemIds) {
     const response = await fetch(
-      `https://mock-api-c1ch.onrender.com/cart/${id}`,
+      `https://fiap-api.onrender.com/api/Cart/${id}`,
       requestOptions
     )
 

@@ -9,16 +9,18 @@ import Toast from 'react-native-toast-message'
 import { numberFormat } from '../helpers'
 import { CartItem, addToCart } from '../services/cart'
 import COLORS from './colors'
+import { ProductItem } from '../services/products'
 
 export default function Card({ product }: { product: any }) {
   const queryClient = useQueryClient()
 
   const { mutate } = useMutation({
-    mutationFn: (formData: CartItem) => {
-      formData.product_id = formData.id
-      formData.quantity = 1
-      formData.id = Math.floor(Math.random() * 100000000000) + 1
-      return addToCart(formData)
+    mutationFn: (product: ProductItem) => {
+      const payload = {
+        productId: product.productId,
+        quantity: 1,
+      }
+      return addToCart(payload)
     },
     onSuccess: async (data: { status: number }) => {
       if (data.status == 201) {
